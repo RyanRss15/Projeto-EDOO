@@ -27,3 +27,10 @@ O núcleo lógico do campo minado foi convertido para operar de forma totalmente
 * **Alocação do Tabuleiro:** A grade bidimensional construída com `lists` no Python foi convertida para `std::vector<std::vector<int>>` para garantir alocação contígua, e as coordenadas de posição passaram a utilizar `std::pair<int, int>`.
 * **Desacoplamento de Eventos (Callbacks):** A dependência direta e global do `pygame.event` foi eliminada. A comunicação do estado do jogo (como revelar mina, marcar bandeira ou vencer) agora utiliza injeção de dependência através de ponteiros de função (`std::function`) e um enumerador estrito (`enum class MinefieldEvent`).
 * **Proteção de Estado:** Propriedades críticas do jogo como contagem de bombas e tiles livres foram isoladas no escopo `private`.
+
+#### Timer.py -> Timer.h / Timer.cpp
+A classe de temporização foi convertida com foco na remoção de dependências de bibliotecas gráficas, tornando-a agnóstica.
+
+* **Desacoplamento do Pygame:** A dependência direta da função `pygame.time.get_ticks()` foi substituída por uma implementação nativa utilizando a biblioteca padrão `<chrono>` do C++. O uso de `std::chrono::steady_clock` garante uma contagem de tempo monotônica e precisa.
+* **Segurança de Tipos e Overflow:** O rastreio de tempo em milissegundos foi definido como `long long` (int64) para prevenir estouros de limite (*overflows*) que ocorreriam com inteiros tradicionais em sessões longas.
+* **Const Correctness:** Métodos de leitura de tempo (como `get_current_time_seconds`) foram assinalados com o modificador `const`, garantindo a nível de compilação que chamadas de leitura não alterem o estado interno do temporizador.
