@@ -18,6 +18,146 @@ if __name__ == '__main__':
     # INICIALIZAÇÃO DO JOGO
     game.run()
 
+#Aquivo game
+# PARTE LÓGICA DO CAMPO MINADO
+ABSTRACT_MINEFIELD = Algoritmos.AbstractMinefield(k.ABSTRACT_MINEFIELD_SIZE, k.ABSTRACT_MINEFIELD_DENSITY)
+
+# PREENCHENDO CAMPO MINADO
+MINEFIELD.fill_matrix()
+
+# COMEÇO DO JOGO
+GAME_START_VALUE = [None]
+
+# DIÁLOGO DE PAUSE
+PAUSE_DIALOGUE = FUZZY_BUBBLES_60.render('PRESSIONE ESC PARA RETORNAR AO JOGO', True, k.COLOR_WHITE)
+
+# TIMER DO JOGO
+GAME_TIMER = Others.Timer()
+
+# TIMER DE DISPONIBILIDADE DOS LADRILHOS
+AVAILABLE_TILE_TIMER = Others.Timer()
+
+# PONTUAÇÃO PARA CONTAR NA TELA FINAL
+COUNTING_SCORE = [0]
+
+# PONTUAÇÃO FINAL
+FINAL_SCORE = []
+ def gsm_init(self, bundles, first_state):
+        # INICIALIZANDO O GERENCIADOR DE ESTADOS
+        self.gsm = GameStateManager()
+
+        # CRIANDO ESTADOS
+        for state_bundle in bundles:
+            self.gsm.create_state(state_bundle)
+
+        # ASSOCIANDO BOTÕES
+        TO_MAIN_GAME_BUTTON.gsm = self.gsm
+
+        # SELECIONANDO O PRIMEIRO ESTADO
+        self.gsm.set_state(first_state)
+        # GERAÇÃO ALEATÓRIA DE COLETÁVEIS
+                    if randint(1, k.RNG_LIFE_COLLECTABLE) == 1:
+                        LIFE_COLLECTABLE.generate((tile_x + tile_x_size * 0.5 - life_x_size * 0.5, tile_y + tile_y_size * 0.5 - life_y_size * 0.5), PURGATORY, 2)
+                    if randint(1, k.RNG_TIME_COLLECTABLE) == 1:
+                        TIME_COLLECTABLE.generate((tile_x + tile_x_size * 0.5 - life_x_size * 0.5, tile_y + tile_y_size * 0.5 - life_y_size * 0.5), PURGATORY, 2)
+                    if randint(1, k.RNG_FLAG_COLLECTABLE) == 1:
+                        FLAG_COLLECTABLE.generate((tile_x + tile_x_size * 0.5 - life_x_size * 0.5, tile_y + tile_y_size * 0.5 - life_y_size * 0.5), PURGATORY, 2)
+
+                # ACERTOU UMA BOMBA NO CAMPO MINADO
+                if event.type == k.MINESWEEPER_MISS:
+                    tile_x, tile_y = event.coordinates
+                    generation_tile = MINEFIELD.button_matrix[tile_x][tile_y]
+                    tile_x, tile_y = generation_tile.rect.center
+                    bomb_x_size, bomb_y_size = BOMB_OBJECT.rect.size
+
+                    # GERA A BOMBA
+                    BOMB_OBJECT.generate((tile_x - bomb_x_size // 2, tile_y - bomb_y_size // 1.3), PURGATORY, 0)
+                # PLANTOU UMA BANDEIRA NO CAMPO MINADO
+                if event.type == k.MINESWEEPER_FLAG:
+                    SFX_STORAGE['FLAG'].play()
+                    MIAUSMA_REACTS.set_animation(MIAUSMA_REACTS_BASE[0], k.MIAUSMA_REACT_POSITION, 3)
+                    MIAUSMA.flag_down(1)
+                    if not GAME_START_VALUE:
+                        MIAUSMA.score_points(5)
+         # REMOVEU UMA BANDEIRA DO CAMPO MINADO
+                if event.type == k.MINESWEEPER_UNFLAG:
+
+                    placed_flags = Sprites.Flag.placed_flags
+                    if event.coordinates in placed_flags:
+                        placed_flags[event.coordinates].kill()
+                        del placed_flags[event.coordinates]
+         # JOGADOR COLETOU UM COLETÁVEL
+                if event.type == k.GET_COLLECTABLE:
+                    SFX_STORAGE['ITEM'].play()
+                    MIAUSMA_REACTS.set_animation(MIAUSMA_REACTS_BASE[0], k.MIAUSMA_REACT_POSITION, 3)
+
+                    if event.caller.__class__ == Sprites.LifeCollectable:
+                        MIAUSMA.heal(1)
+                        SEVEN_LIVES.set_lives(MIAUSMA.lives)
+
+                    if event.caller.__class__ == Sprites.TimeCollectable:
+                        GAME_TIMER.add_time_seconds(3)
+
+                    if event.caller.__class__ == Sprites.FlagCollectable:
+                        MINEFIELD.set_flag_available()
+                        MIAUSMA.flag_up(1)
+
+                # PROTAGONISTA SE CUROU ALÉM DO NECESSÁRIO
+                if event.type == k.OVERHEAL:
+                    MIAUSMA.score_points(200)
+
+                # PROTAGONISTA PEGOU MAIS BANDEIRAS QUE O NECESSÁRIO
+                if event.type == k.OVERFLAG:
+                    MIAUSMA.score_points(100)
+
+                # O JOGO COMEÇOU
+                if event.type == k.GAME_START:
+                    PLAYLIST_MAIN_GAME.start()
+                    GAME_TIMER.set_timer_seconds(k.TIME_LIMIT_SECONDS)
+                    GAME_TIMER.activate()
+class GameStateManager:
+
+    def __init__(self):
+        # INICIALIZA O OBJETO DO GERENCIADOR
+        self.states = {}
+        self.current_state = None
+
+    def create_state(self, state_bundle):
+        # CRIA UMA SÉRIE DE ESTADOS PARA O GERENCIADOR
+        self.states[state_bundle[0]] = state_bundle[1]
+
+    def set_state(self, state):
+        # DEFINE O ESTADO ATUAL DO GERADOR
+        self.current_state = self.states[state]
+
+    def get_state(self):
+        # RETORNA A CLASSE CORRESPONDENTE AO ESTADO DO GERENCIADOR
+        return self.current_state
+
+class MainMenu:
+
+    def __init__(self, screen, gsm):
+        # INICIALIZA O MENU PRINCIPAL
+        self.screen = screen
+        self.gsm = gsm
+
+    def run(self):
+        if not BACKGROUND_MAIN_MENU_DRAWN:
+            # INSERE O PLANO DE FUNDO NA TELA
+            BACKGROUND_MAIN_MENU_DRAWN.append(None)
+            self.screen.put_inside(BACKGROUND_MAIN_MENU, (0, 0))
+
+        # INSERE OS BOTÕES NA TELA
+        self.screen.put_inside(TO_MAIN_GAME_BUTTON, TO_MAIN_GAME_BUTTON.rect.topleft)
+        self.screen.put_inside(QUIT_GAME_BUTTON, QUIT_GAME_BUTTON.rect.topleft)
+
+        BUTTON_MASKS.draw(self.screen.display)
+
+        # CARREGA OS BOTÕES E A APARÊNCIA DELES NA TELA
+        TO_MAIN_GAME_BUTTON.update()
+        QUIT_GAME_BUTTON.update()
+        BUTTON_MASKS.update()
+
 # Arquivo Algoritmos
 import pygame
 from random import shuffle
