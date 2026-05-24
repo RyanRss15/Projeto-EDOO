@@ -43,3 +43,30 @@ A classe de temporização foi convertida com foco na remoção de dependências
 * **Desacoplamento do Pygame:** A dependência direta da função `pygame.time.get_ticks()` foi substituída por uma implementação nativa utilizando a biblioteca padrão `<chrono>` do C++. O uso de `std::chrono::steady_clock` garante uma contagem de tempo monotônica e precisa.
 * **Segurança de Tipos e Overflow:** O rastreio de tempo em milissegundos foi definido como `long long` (int64) para prevenir estouros de limite (*overflows*) que ocorreriam com inteiros tradicionais em sessões longas.
 * **Const Correctness:** Métodos de leitura de tempo (como `get_current_time_seconds`) foram assinalados com o modificador `const`, garantindo a nível de compilação que chamadas de leitura não alterem o estado interno do temporizador.
+
+## 🎮 Como Jogar (Versão Terminal/CLI)
+
+O jogo foi adaptado para rodar nativamente no terminal, transformando a ação em tempo real em uma experiência estratégica baseada em turnos, mas sem perder a pressão do tempo!
+
+### A Interface
+Durante a partida, você verá um painel (HUD) atualizado a cada rodada e a grade do campo minado:
+
+**O Painel (HUD)**
+Mostra suas **Vidas** restantes, o **Tempo** da rodada (limite de 60s), sua **Pontuação** atual e a **Nota** (Grade) correspondente.
+
+**A Grade**
+* **` . `** Ladrilho intocado e misterioso.
+* **` - `** Ladrilho livre e seguro (zero bombas ao redor).
+* **`1-8`** Quantidade de bombas nas casas adjacentes.
+* **` F `** Bandeira plantada por você.
+* **` * `** Bomba detonada (você pisou aqui e perdeu uma vida).
+
+### Controles
+O jogo aguardará o seu comando para processar cada turno. Para interagir, digite a letra da ação desejada, seguida das coordenadas da linha e da coluna (separadas por espaço), e aperte **Enter**:
+
+* **Escavar (`e`):** Revela o conteúdo do ladrilho.
+  * *Exemplo de uso:* Digite `e 4 5` para escavar a linha 4 e coluna 5.
+* **Plantar/Remover Bandeira (`f`):** Marca um ladrilho suspeito com uma bandeira para evitar acidentes, ou remove uma bandeira existente.
+  * *Exemplo de uso:* Digite `f 4 5` para colocar uma bandeira na linha 4 e coluna 5.
+
+**💡 Dica Estratégica:** O relógio só começa a contar **após o seu primeiro movimento**. Aproveite esse tempo de respiro no início para decidir com calma onde dar o primeiro passo!
