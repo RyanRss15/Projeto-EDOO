@@ -11,6 +11,15 @@ E o repostório do jogo original é [esse](https://github.com/Elanosinho/projeto
 
 Esta seção documenta as diretrizes gerais adotadas na transição do projeto e as adaptações específicas aplicadas a cada módulo.
 
+#### Interface de Linha de Comando (CLI) -> main.cpp
+Implementação do motor de jogo e interface visual operando integralmente no terminal, validando o total desacoplamento da classe `AbstractMinefield`.
+
+* **Renderização via Referência (`const &`):** A função de desenho da grade recebe o estado do tabuleiro como uma referência constante, prevenindo cópias pesadas e desnecessárias de memória a cada frame, sem risco de alteração do estado original da matriz.
+* **Injeção de Eventos via Lambdas:** O callback de eventos injetado na classe principal foi implementado utilizando expressões Lambda do C++ moderno. O escopo de captura por referência `[&]` permite que o evento (como explodir uma bomba) altere o estado da variável local `game_over` para interromper o loop, dispensando o uso de variáveis globais.
+* **Entrada de Dados Tipada:** O parsing manual de strings (comum em linguagens dinâmicas) foi substituído pelo fluxo tipado do `std::cin`. Ele extrai sequencialmente o comando de ação (`char`) e as coordenadas (`int`) diretamente do buffer de entrada nativo.
+* **Adaptação Síncrona de Tempo e Vidas:** O loop de jogo no terminal foi atualizado para suportar a classe `Timer` e um contador de vidas extraído do Pygame original. Devido à natureza bloqueante (síncrona) da entrada de dados no terminal (`std::cin`), o tempo é validado imediatamente antes de imprimir a grade e imediatamente após a submissão do comando pelo usuário.
+* **Sobrevivência a Erros:** A injeção de dependência via Lambda foi modificada para interceptar eventos de erro (`MinefieldEvent::MISS`). O jogador agora perde uma vida progressivamente em vez de acionar a condição de derrota imediata, encerrando a partida apenas quando o limite de vidas chega a zero.
+
 ### 1. Diretrizes Gerais do Projeto
 * **Separação entre Interface e Implementação:** Adoção do modelo de compilação separada. Arquivos de cabeçalho (`.h`) atuam como contratos com declarações protegidas por *Include Guards*, enquanto os arquivos de código-fonte (`.cpp`) encapsulam a complexidade da lógica.
 * **Tipagem e Estruturas de Dados:** Substituição das tipagens dinâmicas do Python por estruturas estáticas da Standard Template Library (STL) do C++.

@@ -166,3 +166,11 @@ void AbstractMinefield::win_check() {
         if (event_callback) event_callback(MinefieldEvent::WIN, {-1, -1});
     }
 }
+
+std::vector<std::vector<int>> AbstractMinefield::get_interface() const {
+    return minefield_interface;
+}
+
+std::vector<std::vector<int>> AbstractMinefield::get_mask() const {
+    return minefield_mask;
+}

@@ -34,6 +34,9 @@ private:
 public:
     AbstractMinefield(std::pair<int, int> size, float density);
 
+    std::vector<std::vector<int>> get_mask() const;
+    std::vector<std::vector<int>> get_interface() const;
+    
     void set_event_callback(std::function<void(MinefieldEvent, std::pair<int, int>)> callback);
     void fill_minefield();
     void count_tile(std::pair<int, int> tile);
