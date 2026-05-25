@@ -49,13 +49,9 @@ A classe de temporização foi convertida com foco na remoção de dependências
 O jogo foi adaptado para rodar nativamente no terminal, transformando a ação em tempo real em uma experiência estratégica baseada em turnos, mas sem perder a pressão do tempo!
 
 Para jogar você deve primeiramente compilar os arquivos a partir da seguinte linha de comando no terminal:
-'''
-g++ main.cpp AbstractMinefield.cpp Timer.cpp -o campominado -std=c++11
-''' 
+```g++ main.cpp AbstractMinefield.cpp Timer.cpp -o campominado -std=c++11```
 E em seguida digitar:
-'''
-./campominado
-'''
+```./campominado'''bash```
 
 ### A Interface
 Durante a partida, você verá um painel (HUD) atualizado a cada rodada e a grade do campo minado:
