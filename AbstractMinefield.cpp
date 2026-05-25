@@ -124,10 +124,6 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
         }
     } 
 
-    //Verificação de vitoria para caso o jogador já tenha vencido
-    if (primary_dig) {
-        win_check();
-    }
     // ACERTOU UMA MINA SEM SER A PRIMEIRA ESCAVAÇÃO
     else if (minefield[i_tile][j_tile] && minefield_interface[i_tile][j_tile] != 3) {
         minefield_interface[i_tile][j_tile] = 3;
@@ -152,6 +148,11 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
                 }
             }
         }
+    }
+
+    //Verificação de vitoria para caso o jogador já tenha vencido
+    if (primary_dig) {
+        win_check();
     }
 }
 
