@@ -32,7 +32,7 @@ void AbstractMinefield::fill_minefield() {
     // TRANSFORMA-SE O VETOR EM UMA MATRIZ BIDIMENSIONAL
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            minefield[i][j] = shallow_minefield[i * height + j];
+            minefield[i][j] = shallow_minefield[i * width + j];
         }
     }
 }
