@@ -167,10 +167,11 @@ void AbstractMinefield::win_check() {
     }
 }
 
-std::vector<std::vector<int>> AbstractMinefield::get_interface() const {
+// Adaptando à mudança dos métodos get interface e mask para retornar a referencia por constante e não por valor
+const std::vector<std::vector<int>> &AbstractMinefield::get_interface() const {
     return minefield_interface;
 }
 
-std::vector<std::vector<int>> AbstractMinefield::get_mask() const {
+const std::vector<std::vector<int>> &AbstractMinefield::get_mask() const {
     return minefield_mask;
 }

@@ -34,8 +34,10 @@ private:
 public:
     AbstractMinefield(std::pair<int, int> size, float density);
 
-    std::vector<std::vector<int>> get_mask() const;
-    std::vector<std::vector<int>> get_interface() const;
+    //Métodos adaptados para retornar a o valor por uma referência constante ao inves de ser por valor
+    // (o que fazia uma alocação desnecessária de memoria)
+    const std::vector<std::vector<int>>& get_mask() const;
+    const std::vector<std::vector<int>>& get_interface() const;
     
     void set_event_callback(std::function<void(MinefieldEvent, std::pair<int, int>)> callback);
     void fill_minefield();
