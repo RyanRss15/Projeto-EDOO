@@ -1,6 +1,7 @@
 #include "AbstractMinefield.h"
 #include <random>
 #include <algorithm>
+#include <stdexcept>
 
 AbstractMinefield::AbstractMinefield(std::pair<int, int> size, float density)
     : size(size), width(size.first), height(size.second),
@@ -32,7 +33,7 @@ void AbstractMinefield::fill_minefield() {
     // TRANSFORMA-SE O VETOR EM UMA MATRIZ BIDIMENSIONAL
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            minefield[i][j] = shallow_minefield[i * height + j];
+            minefield[i][j] = shallow_minefield[i * width + j];
         }
     }
 }
@@ -71,6 +72,11 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
     // COORDENADAS DO LADRILHO
     int i_tile = tile.first;
     int j_tile = tile.second;
+
+    //Proteção contra crash a partir de uma exceção
+    if (i_tile < 0 || i_tile >= height || j_tile < 0 || j_tile >= width) {
+        throw std::out_of_range("Coordenadas informadas estao fora dos limites do tabuleiro!");
+    }
 
     // SÓ REVELA O LADRILHO SE NÃO HOUVER UMA BANDEIRA
     if (minefield_interface[i_tile][j_tile] == 2 && primary_dig) {
@@ -117,6 +123,7 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
             }
         }
     } 
+
     // ACERTOU UMA MINA SEM SER A PRIMEIRA ESCAVAÇÃO
     else if (minefield[i_tile][j_tile] && minefield_interface[i_tile][j_tile] != 3) {
         minefield_interface[i_tile][j_tile] = 3;
@@ -142,6 +149,11 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
             }
         }
     }
+
+    //Verificação de vitoria para caso o jogador já tenha vencido
+    if (primary_dig) {
+        win_check();
+    }
 }
 
 // INSERE UMA BANDEIRA NO CAMPO MINADO
@@ -149,6 +161,11 @@ void AbstractMinefield::flag(std::pair<int, int> tile) {
     int i_tile = tile.first;
     int j_tile = tile.second;
     int view = minefield_interface[i_tile][j_tile];
+
+    //Validação da entrada e lançamento de exceção
+    if (i_tile < 0 || i_tile >= height || j_tile < 0 || j_tile >= width) {
+        throw std::out_of_range("Coordenadas de bandeira estao fora dos limites!");
+    }
 
     if (view == 0) {
         minefield_interface[i_tile][j_tile] = 2;
@@ -167,10 +184,11 @@ void AbstractMinefield::win_check() {
     }
 }
 
-std::vector<std::vector<int>> AbstractMinefield::get_interface() const {
+// Adaptando à mudança dos métodos get interface e mask para retornar a referencia por constante e não por valor
+const std::vector<std::vector<int>> &AbstractMinefield::get_interface() const {
     return minefield_interface;
 }
 
-std::vector<std::vector<int>> AbstractMinefield::get_mask() const {
+const std::vector<std::vector<int>> &AbstractMinefield::get_mask() const {
     return minefield_mask;
 }
