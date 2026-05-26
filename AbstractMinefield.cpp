@@ -44,9 +44,8 @@ void AbstractMinefield::count_tile(std::pair<int, int> tile) {
     int j_tile = tile.second;
     int count = 0;
 
-    int offsets[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
 
-    for (auto& offset : offsets) {
+    for (auto& offset : OFFSETS) {
         int i = offset[0];
         int j = offset[1];
         if (i_tile + i >= 0 && i_tile + i < height &&
@@ -113,7 +112,7 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
         }
 
         // OS LADRILHOS AO REDOR SERÃO ESCAVADOS CASO NÃO HAJAM BOMBAS POR PERTO
-        for (auto& offset : offsets) {
+        for (auto& offset : OFFSETS) {
             int ni = i_tile + offset[0];
             int nj = j_tile + offset[1];
             if (ni >= 0 && ni < height && nj >= 0 && nj < width) {
@@ -139,7 +138,7 @@ void AbstractMinefield::dig(std::pair<int, int> tile, bool primary_dig) {
         if (event_callback) event_callback(MinefieldEvent::HIT, {i_tile, j_tile});
 
         // OS LADRILHOS AO REDOR SERÃO ESCAVADOS CASO NÃO HAJAM BOMBAS POR PERTO
-        for (auto& offset : offsets) {
+        for (auto& offset : OFFSETS) {
             int ni = i_tile + offset[0];
             int nj = j_tile + offset[1];
             if (ni >= 0 && ni < height && nj >= 0 && nj < width) {

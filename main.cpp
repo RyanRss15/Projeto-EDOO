@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include <iostream>
 #include <vector>
 #include "AbstractMinefield.h"
@@ -121,10 +122,29 @@ int main() {
             break;
         }
 
-        // Roteamento de comandos para o núcleo lógico do jogo
-        if (action == 'e') game.dig({row, col});
-        else if (action == 'f') game.flag({row, col});
-        else std::cout << "Acao invalida.\n";
+        // ROTEAMENTO DE COMANDOS PROTEGIDO POR TRATAMENTO DE ERRO
+        try {
+            if (action == 'e') {
+                game.dig({row, col});
+            } 
+            else if (action == 'f') {
+                // É altamente recomendável colocar a validação de limites no método flag() também,
+                // assim este mesmo bloco catch vai proteger o seu jogo se o usuário tentar colocar uma bandeira fora do mapa.
+                game.flag({row, col});
+            } 
+            else {
+                std::cout << "Acao invalida.\n";
+            }
+        } 
+        catch (const std::out_of_range& e) {
+            // O código entra aqui APENAS se alguma coordenada inválida disparar o throw
+            std::cout << "\n======================================================\n";
+            std::cout << ">>> ERRO: " << e.what() << "\n";
+            std::cout << "======================================================\n\n";
+
+            // O loop não é quebrado (não usamos break), portanto ele avança para a próxima
+            // iteração e solicita uma nova jogada válida para o jogador.
+        }
     }
 
     // Tela de Resultados Final

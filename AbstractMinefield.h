@@ -16,6 +16,12 @@ enum class MinefieldEvent {
 
 class AbstractMinefield {
 private:
+    // O 'constexpr' garante que a matriz seja construída na memória em tempo de compilação.
+    static constexpr int OFFSETS[8][2] = {
+        {-1, -1}, {-1, 0}, {-1, 1}, 
+        {0, -1},           {0, 1}, 
+        {1, -1},  {1, 0},  {1, 1}
+    };
     std::pair<int, int> size;
     int width, height;
     std::vector<std::vector<int>> minefield;
@@ -34,10 +40,8 @@ private:
 public:
     AbstractMinefield(std::pair<int, int> size, float density);
 
-    //Métodos adaptados para retornar a o valor por uma referência constante ao inves de ser por valor
-    // (o que fazia uma alocação desnecessária de memoria)
-    const std::vector<std::vector<int>>& get_mask() const;
-    const std::vector<std::vector<int>>& get_interface() const;
+    std::vector<std::vector<int>> get_mask() const;
+    std::vector<std::vector<int>> get_interface() const;
     
     void set_event_callback(std::function<void(MinefieldEvent, std::pair<int, int>)> callback);
     void fill_minefield();
