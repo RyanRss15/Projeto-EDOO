@@ -16,6 +16,12 @@ enum class MinefieldEvent {
 
 class AbstractMinefield {
 private:
+    // O 'constexpr' garante que a matriz seja construída na memória em tempo de compilação.
+    static constexpr int OFFSETS[8][2] = {
+        {-1, -1}, {-1, 0}, {-1, 1}, 
+        {0, -1},           {0, 1}, 
+        {1, -1},  {1, 0},  {1, 1}
+    };
     std::pair<int, int> size;
     int width, height;
     std::vector<std::vector<int>> minefield;
